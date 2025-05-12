@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="stl.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+
+</head>
+<body>
+  <!-- <button onclick="openQuizModal()" class="open-btn">Открыть квиз</button> -->
+
+
+  <section class="promo-quiz">
+    <div class="arrow-decoration">
+        <img src="C:\Users\Windows 10\Downloads\arow.png" class="promo-arrow" alt="указатель стрелки">
+      </div>
+      
+    <div class="promo-content">
+      <div class="promo-text">
+        <p class="subtitle">Пройдите квиз и получите</p>
+        <h1 class="title">10% скидку на решение,<br>которое подойдёт именно вам</h1>
+        <ul>
+          <li>Индивидуальное решение</li>
+          <li>Гарантия результата</li>
+          <li>Сопровождение на всех этапах</li>
+        </ul>
+        <button class="quiz-btn" onclick="openQuizModal()">Открыть квиз</button>
+      </div>
+      <div class="promo-image">
+        <img src="C:\Users\Windows 10\Downloads\unb.png"  >
+      </div>
+    </div>
+  </section>
+
+
+
+  <div class="modal" id="quizModal">
+    <div class="modal-overlay" onclick="closeQuizModal()"></div>
+    <div class="modal-content">
+      <button class="close-btn" onclick="closeQuizModal()">×</button>
+      <div id="quiz">
+        <div id="progress" style="margin-bottom: 20px; font-weight: bold;"></div>
+        <div id="step-q1">
+          <p><strong>Какова основная задача вашего проекта?</strong></p>
+          <div class="button-column">
+            <button onclick="selectQ1('Site')">Представить компанию в интернете</button>
+            <button onclick="selectQ1('Shop')">Продавать товары услуги онлайн</button>
+            <button onclick="selectQ1('BP')">Автоматизировать внутренние процессы / продажи</button>
+          </div>
+         
+        </div>
+        <div id="step-branch" style="display: none;"></div>
+        <div id="step-final" style="display: none;"></div>
+      </div>
+    </div>
+  </div>
+
+
+  <script>
+    let answer = {};
+    let branch = null;
+    let resultCode = null;
+    let currentStep = 1;
+    let totalSteps = 0;
+
+
+    function openQuizModal() {
+      resetQuizState();
+  document.getElementById('quizModal').classList.add('show');
+}
+
+    function closeQuizModal() {
+  document.getElementById('quizModal').classList.remove('show');
+  document.querySelector('.modal-content').scrollTop = 0; // сброс прокрутки
+}
+
+    function selectQ1(value) {
+      answer.q1 = value;
+      branch = value;
+      if (branch === 'Site') totalSteps = 3;
+      if (branch === 'Shop') totalSteps = 4;
+      if (branch === 'BP') totalSteps = 5;
+      currentStep = 1;
+      updateProgress(currentStep, totalSteps);
+      document.getElementById('step-q1').style.display = 'none';
+      loadBranchQuestions();
+      saveQuizState();
+    }
+
+    function loadBranchQuestions() {
+      const container = document.getElementById('step-branch');
+      container.innerHTML = '';
+      container.style.display = 'block';
+
+      if (branch === 'Site') {
+        container.innerHTML = `
+          <form onsubmit="handleSite1(event)">
+            <p><strong>Сколько разделов/страниц планируете?</strong></p>
+            <label><input type="radio" name="site1" value="1"> 1</label><br>
+            <label><input type="radio" name="site1" value="2-5"> 2–5</label><br>
+            <label><input type="radio" name="site1" value="6+"> 6 и более</label><br><br>
+            <div class="button-row">
+              <button type="button" onclick="goBackToQ1()">← Назад</button>
+              <button type="submit">Далее</button>
+            </div>
+          </form>
+        `;
+      } else if (branch === 'Shop') {
+        container.innerHTML = `
+          <form onsubmit="handleShop1(event)">
+            <p><strong>Сколько активных товаров будет в каталоге?</strong></p>
+            <label><input type="radio" name="shop1" value="до 100"> до 100</label><br>
+            <label><input type="radio" name="shop1" value="100-1000"> 100–1000</label><br>
+            <label><input type="radio" name="shop1" value="1000+"> 1000 и более</label><br><br>
+            <div class="button-row">
+              <button type="button" onclick="goBackToQ1()">← Назад</button>
+              <button type="submit">Далее</button>
+            </div>
+          </form>
+        `;
+      } else if (branch === 'BP') {
+        container.innerHTML = `
+          <form onsubmit="handleBP1(event)">
+            <p><strong>Сколько сотрудников будет пользоваться системой ежедневно?</strong></p>
+            <label><input type="radio" name="bp1" value="до 50"> до 50</label><br>
+            <label><input type="radio" name="bp1" value="51–200"> 51–200</label><br>
+            <label><input type="radio" name="bp1" value="200+"> 200 и более</label><br><br>
+            <div class="button-row">
+              <button type="button" onclick="goBackToQ1()">← Назад</button>
+              <button type="submit">Далее</button>
+            </div>
+          </form>
+        `;
+      }
+    }
+
+    function handleSite1(event) {
+      event.preventDefault();
+      const selected = document.querySelector('input[name="site1"]:checked');
+      if (!selected) return alert('Выберите один из вариантов!');
+      answer.site1 = selected.value;
+      currentStep++;
+      updateProgress(currentStep, totalSteps);
+      saveQuizState();
+      document.getElementById('step-branch').innerHTML = `
+        <form onsubmit="handleSite2(event)">
+          <p><strong>Нужно ли мобильное приложение к сайту?</strong></p>
+          <label><input type="radio" name="site2" value="yes"> Да</label><br>
+          <label><input type="radio" name="site2" value="no"> Нет</label><br><br>
+          <div class="form-buttons">
+            <button type="submit">Завершить</button>
+          </div>
+        </form>`;
+    }
+
+    function handleSite2(event) {
+      event.preventDefault();
+      const selected = document.querySelector('input[name="site2"]:checked');
+      if (!selected) return alert('Выберите один из вариантов!');
+      answer.site2 = selected.value;
+      resultCode = selected.value === 'yes' ? 'SITE_MOBILE' : 'SITE';
+      currentStep++;
+      updateProgress(currentStep, totalSteps);
+      saveQuizState();
+      showFinalStep();
+    }
+
+    function handleShop1(event) {
+      event.preventDefault();
+      const selected = document.querySelector('input[name="shop1"]:checked');
+      if (!selected) return alert('Выберите один из вариантов!');
+      answer.shop1 = selected.value;
+      currentStep++;
+      updateProgress(currentStep, totalSteps);
+      saveQuizState();
+      document.getElementById('step-branch').innerHTML = `
+        <form onsubmit="handleShop2(event)">
+          <p><strong>Какие интеграции нужны?</strong></p>
+          <label><input type="radio" name="shop2" value="Платёж + доставка"> Платёж + доставка</label><br>
+          <label><input type="radio" name="shop2" value="ERP-склад"> ERP-склад</label><br>
+          <label><input type="radio" name="shop2" value="Маркетплейсы"> Маркетплейсы</label><br><br>
+          <div class="form-buttons">
+            <button type="submit">Далее</button>
+          </div>
+        </form>`;
+    }
+
+    function handleShop2(event) {
+      event.preventDefault();
+      const selected = document.querySelector('input[name="shop2"]:checked');
+      if (!selected) return alert('Выберите один из вариантов!');
+      answer.shop2 = selected.value;
+      currentStep++;
+      updateProgress(currentStep, totalSteps);
+      saveQuizState();
+      document.getElementById('step-branch').innerHTML = `
+        <form onsubmit="handleShop3(event)">
+          <p><strong>Нужно ли отдельное мобильное приложение для покупателей?</strong></p>
+          <label><input type="radio" name="shop3" value="yes"> Да</label><br>
+          <label><input type="radio" name="shop3" value="no"> Нет</label><br><br>
+          <div class="form-buttons">
+            <button type="submit">Завершить</button>
+          </div>
+        </form>`;
+    }
+
+    function handleShop3(event) {
+      event.preventDefault();
+      const selected = document.querySelector('input[name="shop3"]:checked');
+      if (!selected) return alert('Выберите один из вариантов!');
+      answer.shop3 = selected.value;
+      resultCode = selected.value === 'yes' ? 'SHOP_MOBILE' : 'SHOP';
+      currentStep++;
+      updateProgress(currentStep, totalSteps);
+      saveQuizState();
+      showFinalStep();
+      
+    }
+
+    function handleBP1(event) {
+      event.preventDefault();
+      const selected = document.querySelector('input[name="bp1"]:checked');
+      if (!selected) return alert('Выберите один из вариантов!');
+      answer.bp1 = selected.value;
+      currentStep++;
+      updateProgress(currentStep, totalSteps);
+      saveQuizState();
+      document.getElementById('step-branch').innerHTML = `
+        <form onsubmit="handleBP2(event)">
+          <p><strong>Ваши процессы типовые или требуют кастомизации?</strong></p>
+          <label><input type="radio" name="bp2" value="Типовые"> Типовые</label><br>
+          <label><input type="radio" name="bp2" value="Частично кастомные"> Частично кастомные</label><br>
+          <label><input type="radio" name="bp2" value="Уникальные"> Уникальные</label><br><br>
+          <div class="form-buttons">
+            <button type="submit">Далее</button>
+          </div>
+        </form>`;
+    }
+
+    function handleBP2(event) {
+      event.preventDefault();
+      const selected = document.querySelector('input[name="bp2"]:checked');
+      if (!selected) return alert('Выберите один из вариантов!');
+      answer.bp2 = selected.value;
+      currentStep++;
+      updateProgress(currentStep, totalSteps);
+      saveQuizState();
+      document.getElementById('step-branch').innerHTML = `
+        <form onsubmit="handleBP3(event)">
+          <p><strong>Сколько внешних систем нужно связать?</strong></p>
+          <label><input type="radio" name="bp3" value="0-1"> 0–1</label><br>
+          <label><input type="radio" name="bp3" value="2-5"> 2–5</label><br>
+          <label><input type="radio" name="bp3" value="5+"> 5 и более</label><br><br>
+          <div class="form-buttons">
+            <button type="submit">Далее</button>
+          </div>
+        </form>`;
+    }
+
+    function handleBP3(event) {
+      event.preventDefault();
+      const selected = document.querySelector('input[name="bp3"]:checked');
+      if (!selected) return alert('Выберите один из вариантов!');
+      answer.bp3 = selected.value;
+      currentStep++;
+      updateProgress(currentStep, totalSteps);
+      saveQuizState();
+      document.getElementById('step-branch').innerHTML = `
+        <form onsubmit="handleBP4(event)">
+          <p><strong>Нужен ли параллельно новый сайт, магазин или мобильное приложение?</strong></p>
+          <label><input type="radio" name="bp4" value="yes"> Да</label><br>
+          <label><input type="radio" name="bp4" value="no"> Нет</label><br><br>
+          <div class="form-buttons">
+            <button type="submit">Завершить</button>
+          </div>
+        </form>`;
+    }
+
+    function handleBP4(event) {
+      event.preventDefault();
+      const selected = document.querySelector('input[name="bp4"]:checked');
+      if (!selected) return alert('Выберите один из вариантов!');
+      answer.bp4 = selected.value;
+      const ready = answer.bp1 === 'до 50' && answer.bp2 === 'Типовые' && (answer.bp3 === '0-1' || answer.bp3 === '2-5');
+      resultCode = ready ? 'BITRIX' : 'CUSTOM_CRM';
+      if (selected.value === 'yes') resultCode = 'FULL';
+      currentStep++;
+      updateProgress(currentStep, totalSteps);
+      saveQuizState();
+      showFinalStep();
+    }
+
+    function updateProgress(stepIndex, totalSteps) {
+      const progress = document.getElementById('progress');
+      progress.textContent = `Шаг ${stepIndex} из ${totalSteps}`;
+    }
+
+    function goBackToQ1() {
+      branch = null;
+      answer = {};
+      resultCode = null;
+      currentStep = 1;
+      totalSteps = 0;
+      document.getElementById('step-q1').style.display = 'block';
+      document.getElementById('step-branch').style.display = 'none';
+      document.getElementById('step-final').style.display = 'none';
+      document.getElementById('progress').textContent = '';
+
+      progress.style.display = 'block';
+    }
+   
+    function showFinalStep() {
+      document.getElementById('step-q1').style.display = 'none'; // ⬅️ обязательно
+  document.getElementById('step-branch').style.display = 'none';
+  document.getElementById('progress').style.display = 'none';
+
+  const container = document.getElementById('step-final');
+
+  container.innerHTML = `
+    <div class="final-header">
+      <h2 class="final-title">Остался последний шаг</h2>
+      <p class="final-subtitle">Оставьте контакты — мы пришлём вам предложение</p>
+    </div>
+
+    <form id="final-form" onsubmit="submitForm(event)">
+      <input type="text" id="name" placeholder="Имя" required><br><br>
+      <input type="tel" id="phone" placeholder="Телефон" required><br><br>
+      <input type="email" id="email" placeholder="Email" required><br><br>
+      <div class="button-row">
+        <button type="button" onclick="goBackToQ1()">← Назад</button>
+        <button type="submit">Получить КП</button>
+      </div>
+    </form>
+  `;
+
+  document.getElementById('step-branch').style.display = 'none';
+  container.style.display = 'block';
+  document.getElementById('progress').style.display = 'none';
+
+  saveQuizState();
+}
+
+    function getResultTitle() {
+  switch (resultCode) {
+    case 'SITE': return 'Сайт-визитка';
+    case 'SITE_MOBILE': return 'Сайт + приложение';
+    case 'SHOP': return 'Интернет-магазин';
+    case 'SHOP_MOBILE': return 'Магазин + приложение';
+    case 'BITRIX': return 'Bitrix24 подойдёт вам';
+    case 'CUSTOM_CRM': return 'Нужна кастомная CRM';
+    case 'FULL': return 'Комплексное решение';
+    default: return 'Ваше решение';
+  }
+}
+
+    function submitForm(event) {
+  event.preventDefault();
+
+  const name = document.getElementById('name')?.value || '';
+  const phone = document.getElementById('phone')?.value || '';
+  const email = document.getElementById('email')?.value || '';
+
+  // Сохраняем текущие контактные данные перед показом результата
+  answer.contact = { name, phone, email }; // обязательно сохранить контакты
+  saveQuizState();
+
+  const container = document.getElementById('step-final');
+
+  container.innerHTML = `
+    <div id="final-result">
+      <h3 class="final-title1">Подходящее решение для вас:</h3>
+      <h2 class="final-subtitle1">${getResultTitle()}</h2>
+      <ul>
+        <li>Индивидуальное решение</li>
+        <li>Гарантия результата</li>
+        <li>Сопровождение на всех этапах</li>
+      </ul>
+      <div class="button-row">
+        <button onclick="goBackToQ1()">Пройти заново</button>
+      </div>
+    </div>
+  `;
+
+  // Очистить локальное хранилище, если больше не нужно сохранять
+  // localStorage.removeItem('quizData');//
+  // saveQuizState();
+}
+
+
+    function resetQuizState() {
+  answer = {};
+  branch = null;
+  resultCode = null;
+  currentStep = 1;
+  totalSteps = 0;
+
+  // Показываем первый шаг
+  document.getElementById('step-q1').style.display = 'block';
+  document.getElementById('step-branch').style.display = 'none';
+  document.getElementById('step-final').style.display = 'none';
+  document.getElementById('progress').textContent = '';
+  document.getElementById('progress').style.display = 'block';
+
+  // Чистим финальные данные, если нужно
+  document.getElementById('step-final').innerHTML = '';
+
+  // Очищаем сохранённые данные в браузере
+  localStorage.removeItem('quizData');
+}
+
+    function saveQuizState() {
+  const name = document.getElementById('name')?.value || '';
+  const phone = document.getElementById('phone')?.value || '';
+  const email = document.getElementById('email')?.value || '';
+
+  const state = {
+    answer,
+    branch,
+    resultCode,
+    resultLabel: getResultTitle(),
+    currentStep,
+    totalSteps,
+    contact: { name, phone, email }
+  };
+  localStorage.setItem('quizData', JSON.stringify(state));
+}
+
+    window.onload = function () {
+  const saved = localStorage.getItem('quizData');
+  if (!saved) return;
+
+  const state = JSON.parse(saved);
+
+  answer = state.answer || {};
+  branch = state.branch || null;
+  resultCode = state.resultCode || null;
+  currentStep = state.currentStep || 1;
+  totalSteps = state.totalSteps || 0;
+
+  const contact = state.contact || {};
+
+  if (resultCode) {
+    showFinalStep();
+    // Ждём, пока DOM отрисуется
+    setTimeout(() => {
+      if (contact.name) document.getElementById('name').value = contact.name;
+      if (contact.phone) document.getElementById('phone').value = contact.phone;
+      if (contact.email) document.getElementById('email').value = contact.email;
+    }, 100);
+  } else if (branch) {
+    document.getElementById('step-q1').style.display = 'none';
+    loadBranchQuestions();
+    updateProgress(currentStep, totalSteps);
+  }
+};
+
+  </script>
+</body>
+</html>

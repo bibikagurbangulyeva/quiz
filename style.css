@@ -1,0 +1,478 @@
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #0f0f0f, #1a1a1a);
+  color: #fff;
+  margin: 0;
+  padding: 20px;
+}
+
+#quiz {
+  width: 600px;
+  margin: 0 auto;
+  /* background: radial-gradient(circle at top left, #9b1111, #2a0000); */
+  padding: 40px 30px;
+  /* border-radius: 16px; */
+  /* box-shadow: 0 0 20px rgba(255, 0, 0, 0.2); */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 600px;
+  text-align: center;
+  color: #fff;
+}
+
+h2 {
+  color: #ff4d4f;
+  margin-bottom: 15px;
+  
+}
+
+p {
+  font-size: 28px;
+  margin-bottom: 60px;
+}
+
+ul {
+  list-style-position: inside;
+  padding: 0;
+  margin: 0 0 20px;
+}
+
+ul li {
+  margin-bottom: 8px;
+}
+
+/* label {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 16px;
+  cursor: pointer;
+} */
+
+button {
+  display: flex;
+  background: linear-gradient(90deg, #ff4d4f, #c41b2b);
+  color: #fff;
+  border: none;
+  padding: 12px 20px;
+  font-size: 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: all 0.3s ease;
+  
+}
+
+button:hover {
+  background: linear-gradient(90deg, #ff1e23, #8e0e13);
+}
+
+#final-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 30px auto 0;
+  width: 100%;
+  max-width: 500px;
+  text-align: center;
+}
+
+
+
+.button-column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 25px !important; /* This ensures the gap is mandatory and overrides other styles */
+  width: 100%;
+}
+
+
+
+form input[type="text"],
+form input[type="tel"],
+form input[type="email"] {
+  width: 100%;
+  max-width: 400px;
+  padding: 12px 16px;
+  margin-bottom: 15px;
+  justify-content: center;
+  font-size: 16px;
+  background-color: #411515;
+  color: #fff;
+  border: 1px solid #444;
+  border-radius: 6px;
+  box-sizing: border-box;
+}
+
+form {
+  width: 100%;
+  max-width: 500px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 20px;
+  text-align: center;
+  
+}
+
+.form-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  margin-top: 20px;
+  width: 100%;
+}
+
+#progress {
+  text-align: center;
+  font-weight: bold;
+  margin-bottom: 30px;
+  color: #ff4d4f;
+}
+
+.button-row {
+  display: flex;
+  justify-content: center; /* центрируем */
+  gap: 50px; /* отступ между кнопками */
+  margin-top: 30px;
+  width: 100%;
+}
+
+.button-row button {
+  padding: 14px 30px; /* делаем шире */
+  font-size: 16px;
+  flex-shrink: 0;
+  min-width: 150px; 
+  gap: 14px;/* задаём минимальную ширину */
+}
+
+.modal {
+  display: none; /* по умолчанию скрыто */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 10000;
+  
+}
+
+.modal.show {
+  display: flex; /* при добавлении .show — появляется */
+}
+
+.modal-overlay {
+  position: absolute;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
+.modal-content {
+
+  position: relative;
+   background: none; /*radial-gradient(circle at center left, #2a0f0f, #2a0000); */
+  padding: 40px;
+  color: #fff;
+  width: 700px;
+  align-items: center;
+           /* фиксированная ширина */
+  height: 600px;  
+  /* max-width: 90%;
+  max-height: 90%; */
+  overflow-y: auto;
+  border-radius: 20px;
+  box-shadow: 0 0 30px #d70000;
+  z-index: 1001;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  text-align: left;
+
+  /* вот что нужно поправить: */
+  min-height: 400px;  /* чтобы форма не "сжималась" */
+  height: auto;       /* больше не фиксируем высоту */
+}
+.modal-content::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url('Group 4.png'); /* путь к изображению */
+  background-size: cover;
+  background-position: center;
+  filter: blur(8px);
+  opacity: 0.4;
+  z-index: 0;
+}
+
+.modal-content > * {
+  position: relative;
+  z-index: 1;
+}
+
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  background: none;
+  color: #ff4d4f;
+  font-size: 24px;
+  border: none;
+  cursor: pointer;
+}
+
+.open-btn {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 9999;
+  background: #ff1e1e;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+#final-result {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  justify-content: center;
+  height: 100%;
+  padding: 40px 20px;
+}
+
+#final-result h2 {
+  font-size: 24px;
+  color: #fff;
+  margin-bottom: 32px;
+}
+
+#final-result p {
+  font-size: 18px;
+  color: #aaa;
+  margin-bottom: 20px;
+}
+
+#final-result ul {
+  text-align: left;
+  max-width: 400px;
+}
+
+.final-title1 {
+  font-size: 14px;
+  color: #bbb;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.final-subtitle1 {
+  font-size: 32px !important;
+  color: #ff4d4f !important;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+#final-form {
+  align-items: center; /* вместо center */
+  text-align: center;
+}
+
+.modal-content form {
+  align-items: flex-start;  /* всё внутри формы — влево */
+  text-align: left;
+  width: 100%;
+}
+
+.modal-content p {
+  text-align: center; /* Вопрос по-прежнему по центру */
+  width: 100%;
+}
+
+.modal-content label {
+  text-align: left;
+  width: 100%;
+  padding-left: 8px;
+}
+
+.button-column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+}
+
+.button-column button {
+  width: 100%;
+  max-width: 360px;
+  text-align: center;
+  justify-content: center;
+}
+
+ input[type="radio"] {
+  accent-color: #ff4d4f;
+  transform: scale(1.3);
+}
+
+.modal-content form label {
+  width: 100%;
+  max-width: 450px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.modal-content form input[type="radio"] {
+  accent-color: red; /* круг станет красным */
+}
+
+.modal-content form label:hover {
+  background-color: #5a1f1f;
+  border-color: #ff4d4f;
+  transition: background 0.2s;
+}
+
+.modal-content form input[type="radio"]:checked + span {
+  font-weight: bold;
+  color: #ff4d4f;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@media (max-width: 768px) {
+  form {
+    margin-top: 5px;
+    gap: 0;
+    padding: 0;
+  }
+  
+  form input[type="text"],
+  form input[type="tel"],
+  form input[type="email"] {
+    margin-bottom: 0px;
+    padding: 10px 12px;
+    font-size: 14px;
+  }
+  
+  .form-buttons {
+    margin-top: 12px;
+    gap: 10px;
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+
+  #quiz {
+    width: 260px;
+    margin: 0 auto;
+    /* background: radial-gradient(circle at top left, #9b1111, #2a0000); */
+    padding: 40px 30px;
+    /* border-radius: 16px; */
+    /* box-shadow: 0 0 20px rgba(255, 0, 0, 0.2); */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    height: 520px;
+    text-align: center;
+    color: #fff;
+  }
+
+  .modal-content {
+    width: 95vw;           /* 95% ширины экрана */
+    max-width: 380px;      /* но не больше 340px */
+    padding: 20px;
+    height: auto;
+    max-height: 90vh;
+    overflow-y: auto;
+    border-radius: 14px;
+    box-sizing: border-box;
+    position: relative;
+    display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 30px 20px;
+  }
+
+  p {
+    font-size: 18px;
+    margin-bottom: 20px;
+  }
+
+  button {
+    font-size: 14px;
+    padding: 12px;
+    width: 100%;
+    white-space: normal; 
+    text-align: center; 
+    justify-content: center;  /* по центру по горизонтали */
+    align-items: center;             /* кнопки переносят текст */
+  }
+
+  .button-row,
+  .button-column {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 20px;
+    text-align: center;
+    justify-content: center;  /* по центру по горизонтали */
+    align-items: center;     
+  }
+
+  .close-btn {
+    all: unset;
+    position: absolute;
+    top: 12px;
+    right: 16px;
+    font-size: 26px;
+    color: #ff4d4f;
+    background: none;
+    border: none;
+    cursor: pointer;
+    z-index: 10;
+  }
+
+
+  .final-subtitle {
+    font-size: 14px !important;
+    line-height: 1.3;
+    margin-bottom: 16px;
+  }
+  
+ 
+  .final-title {
+    font-size: 16px !important;
+    line-height: 1.4;
+    margin-bottom: 12px;
+  }
+  
+ 
+}
