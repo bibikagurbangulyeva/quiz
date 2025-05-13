@@ -203,7 +203,7 @@ form {
   content: "";
   position: absolute;
   inset: 0;
-  background-image: url('Group 4.png'); /* путь к изображению */
+  background-image: url('images/Group 4.png'); /* путь к изображению */
   background-size: cover;
   background-position: center;
   filter: blur(8px);
